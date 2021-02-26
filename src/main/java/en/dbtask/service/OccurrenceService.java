@@ -16,6 +16,7 @@ import java.util.Map;
 public class OccurrenceService implements OccurrenceServiceI{
     private String finished = "FINISHED";
     private String started = "STARTED";
+    private Long maxTime = 4L;
 
 
     @Override
@@ -42,5 +43,23 @@ public class OccurrenceService implements OccurrenceServiceI{
             line = bufferedReader.readLine();
         }
         return occurrenceDtoMap;
+    }
+
+    @Override
+    public Occurrence mapperFromDto(OccurrenceDto occurrenceDto) {
+        Occurrence occurrence = new Occurrence();
+        occurrence.setId(occurrenceDto.getId());
+        occurrence.setType(occurrenceDto.getType());
+        occurrence.setHost(occurrenceDto.getHost());
+        Long startTime = occurrenceDto.getStart().getDuration();
+        Long finishTime = occurrenceDto.getFinish().getDuration();
+        Long duration = finishTime-startTime;
+        occurrence.setDuration(duration);
+        if(duration>maxTime){
+            occurrence.setAlert(true);
+        }else{
+            occurrence.setAlert(false);
+        }
+        return occurrence;
     }
 }

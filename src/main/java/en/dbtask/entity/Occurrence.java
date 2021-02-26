@@ -8,13 +8,13 @@ public class Occurrence {
     private String state;
     private String type;
     private String host;
-    private Integer duration;
+    private Long duration;
     private Boolean alert;
 
     public Occurrence() {
     }
 
-    public Occurrence(String id, String state, String type, String host, Integer duration, Boolean alert) {
+    public Occurrence(String id, String state, String type, String host, Long duration, Boolean alert) {
         this.id = id;
         this.state = state;
         this.type = type;
@@ -73,11 +73,11 @@ public class Occurrence {
         this.host = host;
     }
 
-    public Integer getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 
