@@ -2,7 +2,7 @@ package en.dbtask.entity;
 
 import java.util.Objects;
 
-public class Record {
+public class Occurrence {
 
     private String id;
     private String state;
@@ -11,10 +11,10 @@ public class Record {
     private Integer duration;
     private Boolean alert;
 
-    public Record() {
+    public Occurrence() {
     }
 
-    public Record(String id, String state, String type, String host, Integer duration, Boolean alert) {
+    public Occurrence(String id, String state, String type, String host, Integer duration, Boolean alert) {
         this.id = id;
         this.state = state;
         this.type = type;
@@ -27,13 +27,13 @@ public class Record {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Record record = (Record) o;
-        return Objects.equals(id, record.id) &&
-                Objects.equals(state, record.state) &&
-                Objects.equals(type, record.type) &&
-                Objects.equals(host, record.host) &&
-                Objects.equals(duration, record.duration) &&
-                Objects.equals(alert, record.alert);
+        Occurrence occurrence = (Occurrence) o;
+        return Objects.equals(id, occurrence.id) &&
+                Objects.equals(state, occurrence.state) &&
+                Objects.equals(type, occurrence.type) &&
+                Objects.equals(host, occurrence.host) &&
+                Objects.equals(duration, occurrence.duration) &&
+                Objects.equals(alert, occurrence.alert);
     }
 
     @Override

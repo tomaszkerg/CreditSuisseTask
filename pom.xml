@@ -30,14 +30,21 @@
 
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-skin</artifactId>
-            <version>1.2</version>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0-alpha1</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.12.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.16</version>
+            <scope>provided</scope>
         </dependency>
 
 
