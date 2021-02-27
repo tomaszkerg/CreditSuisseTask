@@ -4,14 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import en.dbtask.entity.Occurrence;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+
+import java.util.*;
 
 @Slf4j
 public class OccurrenceService implements OccurrenceServiceI{
@@ -25,13 +21,29 @@ public class OccurrenceService implements OccurrenceServiceI{
     public Map<String, Occurrence> readLogsFromFile() throws IOException {
         Map<String, Occurrence> occurrenceMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
-        String line = bufferedReader.readLine();
-        while(line != null){
-            Occurrence occurrence = objectMapper.readValue(line,Occurrence.class);
-            log.info("read log with id: "+occurrence.getId());
-            occurrenceMap = setTime(occurrenceMap,occurrence);
-            line = bufferedReader.readLine();
+        File file = new File(fileName);
+
+        FileInputStream inputStream = null;
+        Scanner sc = null;
+        try {
+            inputStream = new FileInputStream(file);
+            sc = new Scanner(inputStream, "UTF-8");
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                Occurrence occurrence = objectMapper.readValue(line,Occurrence.class);
+                log.info("read log with id: "+occurrence.getId());
+                occurrenceMap = setTime(occurrenceMap,occurrence);
+            }
+            if (sc.ioException() != null) {
+                throw sc.ioException();
+            }
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (sc != null) {
+                sc.close();
+            }
         }
         return occurrenceMap;
     }

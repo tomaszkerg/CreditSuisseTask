@@ -87,6 +87,7 @@ public class Occurrence {
                 Objects.equals(type, that.type) &&
                 Objects.equals(host, that.host) &&
                 Objects.equals(duration, that.duration) &&
+                Objects.equals(timestamp, that.timestamp) &&
                 Objects.equals(startTime, that.startTime) &&
                 Objects.equals(finishTime, that.finishTime) &&
                 Objects.equals(alert, that.alert);
@@ -94,7 +95,7 @@ public class Occurrence {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, state, type, host, duration, startTime, finishTime, alert);
+        return Objects.hash(id, state, type, host, duration, timestamp, startTime, finishTime, alert);
     }
 
     public String getState() {
