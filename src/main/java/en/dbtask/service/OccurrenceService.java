@@ -1,7 +1,6 @@
 package en.dbtask.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import en.dbtask.dto.OccurrenceDto;
 import en.dbtask.entity.Occurrence;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,7 +8,9 @@ import java.io.BufferedReader;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -17,57 +18,65 @@ public class OccurrenceService implements OccurrenceServiceI{
     private String finished = "FINISHED";
     private String started = "STARTED";
     private Long maxTime = 4L;
+    private String fileName = "logs.json";
 
 
     @Override
-    public Map<String, OccurrenceDto> readLogsFromFile() throws IOException {
-        Map<String, OccurrenceDto> occurrenceDtoMap = new HashMap<>();
+    public Map<String, Occurrence> readLogsFromFile() throws IOException {
+        Map<String, Occurrence> occurrenceMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("logs.json"));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
         String line = bufferedReader.readLine();
         while(line != null){
             Occurrence occurrence = objectMapper.readValue(line,Occurrence.class);
-            OccurrenceDto occurrenceDto = occurrenceDtoMap.get(occurrence.getId());
-            if(occurrenceDto == null) {
-                occurrenceDto = new OccurrenceDto(occurrence.getId(),occurrence.getType(), occurrence.getHost());
-                occurrenceDtoMap.put(occurrence.getId(),occurrenceDto);
-            }
-            if (finished.equals(occurrence.getState())) {
-                occurrenceDto.setFinish(occurrence);
-            } else if (started.equals(occurrence.getState())) {
-                occurrenceDto.setStart(occurrence);
-            } else{
-                log.info("no such state");
-            }
-
+            log.info("read log: "+occurrence);
+            occurrenceMap = setTime(occurrenceMap,occurrence);
             line = bufferedReader.readLine();
         }
-        return occurrenceDtoMap;
+        return occurrenceMap;
     }
 
-    @Override
-    public Occurrence mapperFromDto(OccurrenceDto occurrenceDto) {
-        Occurrence occurrence = new Occurrence();
-        occurrence.setId(occurrenceDto.getId());
-        occurrence.setType(occurrenceDto.getType());
-        occurrence.setHost(occurrenceDto.getHost());
-        occurrence = countOccurrenceTime(occurrence,occurrenceDto);
-        log.info("mapped id log: "+occurrence.getId());
-        return occurrence;
-    }
+
 
     @Override
-    public Occurrence countOccurrenceTime(Occurrence occurrence, OccurrenceDto occurrenceDto) {
-        Long startTime = occurrenceDto.getStart().getDuration();
-        Long finishTime = occurrenceDto.getFinish().getDuration();
-        Long duration = finishTime-startTime;
-        occurrence.setDuration(duration);
-        log.info("counting occurrence time with id: "+occurrence.getId());
-        if(duration>maxTime){
-            occurrence.setAlert(true);
-        }else {
-            occurrence.setAlert(false);
+    public Occurrence checkStateAndSetFirstTime(Occurrence occurrence) {
+        if (finished.equals(occurrence.getState())) {
+            occurrence.setFinishTime(occurrence.getTimestamp());
+        } else if (started.equals(occurrence.getState())) {
+            occurrence.setStartTime(occurrence.getTimestamp());
+        } else{
+            log.info("no such state");
         }
         return occurrence;
+    }
+
+    @Override
+    public List<Occurrence> calculateLogsTime(Map<String, Occurrence> logsFromFile) {
+        List<Occurrence> occurrenceList = new ArrayList<>();
+        for(Occurrence o:logsFromFile.values()){
+            log.info("calculating log time with id: "+o.getId());
+            Long duration = o.getFinishTime()-o.getStartTime();
+            o.setDuration(duration);
+            o.setAlert(duration > maxTime);
+            occurrenceList.add(o);
+        }
+        return occurrenceList;
+    }
+
+    @Override
+    public Map<String, Occurrence> setTime(Map<String, Occurrence> occurrenceMap, Occurrence occurrence) {
+        Occurrence occurrenceFromMap = occurrenceMap.get(occurrence.getId());
+        log.info("setting time for log with id: "+occurrence.getId());
+        if(occurrenceFromMap==null) {
+            occurrence = checkStateAndSetFirstTime(occurrence);
+            occurrenceMap.put(occurrence.getId(),occurrence);
+        }else{
+            if(occurrenceFromMap.getStartTime()!=null) {
+                occurrenceFromMap.setFinishTime(occurrence.getTimestamp());
+            }else if(occurrenceFromMap.getFinishTime()!=null){
+                occurrenceFromMap.setStartTime(occurrence.getTimestamp());
+            }
+        }
+        return occurrenceMap;
     }
 }

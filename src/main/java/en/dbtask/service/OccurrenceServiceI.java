@@ -1,15 +1,15 @@
 package en.dbtask.service;
 
-import en.dbtask.dto.OccurrenceDto;
 import en.dbtask.entity.Occurrence;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public interface OccurrenceServiceI {
 
-    public Map<String, OccurrenceDto> readLogsFromFile() throws IOException;
-    public Occurrence mapperFromDto(OccurrenceDto occurrenceDto);
-    public Occurrence countOccurrenceTime(Occurrence occurrence, OccurrenceDto occurrenceDto);
+    public Map<String, Occurrence> readLogsFromFile() throws IOException;
+    public Occurrence checkStateAndSetFirstTime(Occurrence occurrence);
+    public List<Occurrence> calculateLogsTime(Map<String, Occurrence> logsFromFile);
+    public Map<String, Occurrence> setTime(Map<String, Occurrence> occurrenceMap, Occurrence occurrence);
 }

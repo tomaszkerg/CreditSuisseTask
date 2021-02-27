@@ -9,24 +9,58 @@ public class Occurrence {
     private String type;
     private String host;
     private Long duration;
+    private Long timestamp;
     private Long startTime;
     private Long finishTime;
     private Boolean alert;
 
+
+
     public Occurrence() {
     }
 
-    public Occurrence(String id, String state, String type, String host, Long duration, Long startTime, Long finishTime, Boolean alert) {
+    public Occurrence(String id, String state, Long timestamp, String type, String host) {
+        this.id = id;
+        this.state = state;
+        this.type = type;
+        this.host = host;
+        this.timestamp = timestamp;
+    }
+
+    public Occurrence(String id, String state, String type, String host, Long timestamp, Long startTime, Long finishTime) {
+        this.id = id;
+        this.state = state;
+        this.type = type;
+        this.host = host;
+        this.timestamp = timestamp;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
+    }
+
+    public Occurrence(String id, String state, Long timestamp) {
+        this.id = id;
+        this.state = state;
+        this.timestamp = timestamp;
+    }
+
+    public Occurrence(String id, String state, String type, String host, Long duration, Long timestamp, Long startTime, Long finishTime, Boolean alert) {
         this.id = id;
         this.state = state;
         this.type = type;
         this.host = host;
         this.duration = duration;
+        this.timestamp = timestamp;
         this.startTime = startTime;
         this.finishTime = finishTime;
         this.alert = alert;
     }
+    public Long getTimestamp() {
+        return timestamp;
+    }
 
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
     public Long getStartTime() {
         return startTime;
     }

@@ -24,10 +24,10 @@ public class OccurrenceDao {
             "    alert boolean)";
     public OccurrenceDao() {
         try {
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+            Class.forName("org.hsqldb.jdbcDriver");
             connection = DriverManager.getConnection(URL, USER, PASS);
             log.info("connecting to database");
-//            dropAndCreateTable();
+            dropAndCreateTable();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
