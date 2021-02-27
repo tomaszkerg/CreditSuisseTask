@@ -9,36 +9,58 @@ public class Occurrence {
     private String type;
     private String host;
     private Long duration;
+    private Long startTime;
+    private Long finishTime;
     private Boolean alert;
 
     public Occurrence() {
     }
 
-    public Occurrence(String id, String state, String type, String host, Long duration, Boolean alert) {
+    public Occurrence(String id, String state, String type, String host, Long duration, Long startTime, Long finishTime, Boolean alert) {
         this.id = id;
         this.state = state;
         this.type = type;
         this.host = host;
         this.duration = duration;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
         this.alert = alert;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Long finishTime) {
+        this.finishTime = finishTime;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Occurrence occurrence = (Occurrence) o;
-        return Objects.equals(id, occurrence.id) &&
-                Objects.equals(state, occurrence.state) &&
-                Objects.equals(type, occurrence.type) &&
-                Objects.equals(host, occurrence.host) &&
-                Objects.equals(duration, occurrence.duration) &&
-                Objects.equals(alert, occurrence.alert);
+        Occurrence that = (Occurrence) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(state, that.state) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(host, that.host) &&
+                Objects.equals(duration, that.duration) &&
+                Objects.equals(startTime, that.startTime) &&
+                Objects.equals(finishTime, that.finishTime) &&
+                Objects.equals(alert, that.alert);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, state, type, host, duration, alert);
+        return Objects.hash(id, state, type, host, duration, startTime, finishTime, alert);
     }
 
     public String getState() {

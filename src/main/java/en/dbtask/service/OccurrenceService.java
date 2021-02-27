@@ -37,7 +37,7 @@ public class OccurrenceService implements OccurrenceServiceI{
             } else if (started.equals(occurrence.getState())) {
                 occurrenceDto.setStart(occurrence);
             } else{
-                log.info("no such event");
+                log.info("no such state");
             }
 
             line = bufferedReader.readLine();
@@ -51,13 +51,21 @@ public class OccurrenceService implements OccurrenceServiceI{
         occurrence.setId(occurrenceDto.getId());
         occurrence.setType(occurrenceDto.getType());
         occurrence.setHost(occurrenceDto.getHost());
+        occurrence = countOccurrenceTime(occurrence,occurrenceDto);
+        log.info("mapped id log: "+occurrence.getId());
+        return occurrence;
+    }
+
+    @Override
+    public Occurrence countOccurrenceTime(Occurrence occurrence, OccurrenceDto occurrenceDto) {
         Long startTime = occurrenceDto.getStart().getDuration();
         Long finishTime = occurrenceDto.getFinish().getDuration();
         Long duration = finishTime-startTime;
         occurrence.setDuration(duration);
+        log.info("counting occurrence time with id: "+occurrence.getId());
         if(duration>maxTime){
             occurrence.setAlert(true);
-        }else{
+        }else {
             occurrence.setAlert(false);
         }
         return occurrence;

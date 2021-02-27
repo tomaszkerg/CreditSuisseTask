@@ -11,4 +11,5 @@ public interface OccurrenceServiceI {
 
     public Map<String, OccurrenceDto> readLogsFromFile() throws IOException;
     public Occurrence mapperFromDto(OccurrenceDto occurrenceDto);
+    public Occurrence countOccurrenceTime(Occurrence occurrence, OccurrenceDto occurrenceDto);
 }
