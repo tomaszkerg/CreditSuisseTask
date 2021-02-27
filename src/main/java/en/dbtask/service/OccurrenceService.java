@@ -7,43 +7,25 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Slf4j
 public class OccurrenceService implements OccurrenceServiceI{
-    private String finished = "FINISHED";
-    private String started = "STARTED";
-    private Long maxTime = 4L;
-    private String fileName = "logs.json";
 
 
     @Override
     public Map<String, Occurrence> readLogsFromFile() throws IOException {
         Map<String, Occurrence> occurrenceMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
-        File file = new File(fileName);
-
-        FileInputStream inputStream = null;
-        Scanner sc = null;
-        try {
-            inputStream = new FileInputStream(file);
-            sc = new Scanner(inputStream, "UTF-8");
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                Occurrence occurrence = objectMapper.readValue(line,Occurrence.class);
-                log.info("read log with id: "+occurrence.getId());
-                occurrenceMap = setTime(occurrenceMap,occurrence);
-            }
-            if (sc.ioException() != null) {
-                throw sc.ioException();
-            }
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            if (sc != null) {
-                sc.close();
-            }
+        String fileName = "logs.json";
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+        String line = bufferedReader.readLine();
+        while(line != null){
+            Occurrence occurrence = objectMapper.readValue(line,Occurrence.class);
+            log.info("read log with id: "+occurrence.getId());
+            occurrenceMap = setTime(occurrenceMap,occurrence);
+            line = bufferedReader.readLine();
         }
         return occurrenceMap;
     }
@@ -52,6 +34,8 @@ public class OccurrenceService implements OccurrenceServiceI{
 
     @Override
     public Occurrence checkStateAndSetFirstTime(Occurrence occurrence) {
+        String finished = "FINISHED";
+        String started = "STARTED";
         if (finished.equals(occurrence.getState())) {
             occurrence.setFinishTime(occurrence.getTimestamp());
         } else if (started.equals(occurrence.getState())) {
@@ -67,8 +51,9 @@ public class OccurrenceService implements OccurrenceServiceI{
         List<Occurrence> occurrenceList = new ArrayList<>();
         for(Occurrence o:logsFromFile.values()){
             log.info("calculating log time with id: "+o.getId());
-            Long duration = o.getFinishTime()-o.getStartTime();
+            long duration = o.getFinishTime()-o.getStartTime();
             o.setDuration(duration);
+            long maxTime = 4L;
             o.setAlert(duration > maxTime);
             occurrenceList.add(o);
         }

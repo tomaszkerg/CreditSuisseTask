@@ -13,7 +13,7 @@ import java.util.Map;
 @Slf4j
 public class RunApplication {
 
-    private OccurrenceServiceI occurrenceService = new OccurrenceService();
+    private final OccurrenceServiceI occurrenceService = new OccurrenceService();
 
     public static void main(String[] args) {
         RunApplication runApplication = new RunApplication();
@@ -22,7 +22,7 @@ public class RunApplication {
     public void runApp() {
         try {
             OccurrenceDao occurrenceDao = new OccurrenceDao();
-            log.info("Reading events from file");
+            log.info("Reading logs from file");
             Map<String, Occurrence> occurrenceFromFile = occurrenceService.readLogsFromFile();
             List<Occurrence> occurrences = occurrenceService.calculateLogsTime(occurrenceFromFile);
             for (Occurrence o : occurrences) {
