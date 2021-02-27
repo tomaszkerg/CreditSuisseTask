@@ -29,7 +29,7 @@ public class OccurrenceService implements OccurrenceServiceI{
         String line = bufferedReader.readLine();
         while(line != null){
             Occurrence occurrence = objectMapper.readValue(line,Occurrence.class);
-            log.info("read log: "+occurrence);
+            log.info("read log with id: "+occurrence.getId());
             occurrenceMap = setTime(occurrenceMap,occurrence);
             line = bufferedReader.readLine();
         }
