@@ -16,6 +16,7 @@ public class OccurrenceDao {
     private static final String PASS = "";
     private Connection connection;
     private final String sqlSave = "INSERT INTO occurrence(id,duration,type,host,alert) values (?,?,?,?,?)";
+    private final String dropSql = "DROP TABLE occurrence";
     private final String sqlTable = "CREATE TABLE occurrence(\n" +
             "    id varchar(20) not null,\n" +
             "    duration int not null,\n" +
@@ -50,6 +51,8 @@ public class OccurrenceDao {
 
     private void dropAndCreateTable(){
         try{
+            PreparedStatement preparedStatementDrop = connection.prepareStatement(dropSql);
+            preparedStatementDrop.execute();
             PreparedStatement preparedStatement = connection.prepareStatement(sqlTable);
             preparedStatement.execute();
             log.info("dropped and created new table");
